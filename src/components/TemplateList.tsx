@@ -7,7 +7,7 @@ const TemplateList = () => {
         <input
           type="text"
           placeholder="Search templates..."
-          className="w-full px-4 py-2 border rounded-lg"
+          className="w-full px-4 py-2 border rounded-lg bg-white"
           value={''}
           onChange={() => {}}
         />
@@ -20,13 +20,13 @@ const TemplateList = () => {
           <div className="flex justify-between items-center">
             <div className="space-x-2">
               <Link
-                to={`/`}
+                to={`/edit/1`}
                 className="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200"
               >
                 Edit
               </Link>
               <Link
-                to={`/`}
+                to={`/preview/1`}
                 className="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md text-green-700 bg-green-100 hover:bg-green-200"
               >
                 Preview
