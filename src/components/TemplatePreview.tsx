@@ -85,8 +85,8 @@ function TemplatePreview() {
               </label>
 
               {element.type === 'text' && (
-                <input
-                  type="text"
+                <textarea
+                  rows={3}
                   value={(formData[element.id] as string) || ''}
                   onChange={(e) =>
                     handleInputChange(element.id, e.target.value)

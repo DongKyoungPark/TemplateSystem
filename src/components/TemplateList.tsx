@@ -1,19 +1,29 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import useTemplateStore from '../store/templateStore';
+import DeleteConfirmModal from './DeleteConfirmModal';
+import { Template } from '../types/template';
+import { FaTrash } from 'react-icons/fa';
 
 const TemplateList = () => {
   const { searchQuery, setSearchQuery, deleteTemplate, getFilteredTemplates } =
     useTemplateStore();
-  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [templateToDelete, setTemplateToDelete] = useState<Template | null>(
+    null
+  );
 
-  const handleDelete = (id: string) => {
-    if (deleteConfirmId === id) {
-      deleteTemplate(id);
-      setDeleteConfirmId(null);
-    } else {
-      setDeleteConfirmId(id);
+  const handleDeleteClick = (template: Template) => {
+    setTemplateToDelete(template);
+    setDeleteModalOpen(true);
+  };
+
+  const handleDeleteConfirm = () => {
+    if (templateToDelete) {
+      deleteTemplate(templateToDelete.id);
     }
+    setDeleteModalOpen(false);
+    setTemplateToDelete(null);
   };
 
   const filteredTemplates = getFilteredTemplates();
@@ -51,14 +61,10 @@ const TemplateList = () => {
                 </Link>
               </div>
               <button
-                onClick={() => handleDelete(template.id)}
-                className={`inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md ${
-                  deleteConfirmId === template.id
-                    ? 'text-red-700 bg-red-100 hover:bg-red-200'
-                    : 'text-gray-700 bg-gray-100 hover:bg-gray-200'
-                }`}
+                onClick={() => handleDeleteClick(template)}
+                className="text-red-500 hover:text-red-700 p-2"
               >
-                {deleteConfirmId === template.id ? 'Confirm Delete' : 'Delete'}
+                <FaTrash size={16} />
               </button>
             </div>
           </div>
@@ -70,6 +76,13 @@ const TemplateList = () => {
           <p className="text-gray-500 text-lg">No templates found</p>
         </div>
       )}
+
+      <DeleteConfirmModal
+        isOpen={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        onConfirm={handleDeleteConfirm}
+        itemName={templateToDelete?.name || ''}
+      />
     </div>
   );
 };

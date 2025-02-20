@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import useTemplateStore from '../store/templateStore';
 import type { Template, TemplateElement } from '../types/template';
+import DeleteConfirmModal from './DeleteConfirmModal';
+import { FaTrash } from 'react-icons/fa';
 
 const TemplateEditor = () => {
   const { id } = useParams();
@@ -13,6 +15,10 @@ const TemplateEditor = () => {
     description: '',
     elements: [],
   });
+
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [elementToDelete, setElementToDelete] =
+    useState<TemplateElement | null>(null);
 
   useEffect(() => {
     if (id) {
@@ -73,6 +79,19 @@ const TemplateEditor = () => {
       addTemplate(template as Omit<Template, 'id' | 'createdAt' | 'updatedAt'>);
     }
     navigate('/');
+  };
+
+  const handleDeleteClick = (element: TemplateElement) => {
+    setElementToDelete(element);
+    setDeleteModalOpen(true);
+  };
+
+  const handleDeleteConfirm = () => {
+    if (elementToDelete) {
+      removeElement(elementToDelete.id);
+    }
+    setDeleteModalOpen(false);
+    setElementToDelete(null);
   };
 
   return (
@@ -152,10 +171,10 @@ const TemplateEditor = () => {
                 </h3>
                 <button
                   type="button"
-                  onClick={() => removeElement(element.id)}
-                  className="text-red-600 hover:text-red-800"
+                  onClick={() => handleDeleteClick(element)}
+                  className="text-red-500 hover:text-red-700 p-2"
                 >
-                  Remove
+                  <FaTrash size={16} />
                 </button>
               </div>
 
@@ -220,9 +239,9 @@ const TemplateEditor = () => {
                                 options: newOptions,
                               });
                             }}
-                            className="text-red-600 hover:text-red-800"
+                            className="text-red-500 hover:text-red-700 p-2"
                           >
-                            Remove
+                            <FaTrash size={16} />
                           </button>
                         </div>
                       ))}
@@ -260,6 +279,15 @@ const TemplateEditor = () => {
           </button>
         </div>
       </form>
+
+      <DeleteConfirmModal
+        isOpen={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        onConfirm={handleDeleteConfirm}
+        itemName={`${elementToDelete?.type || ''} field${
+          elementToDelete?.label ? `: ${elementToDelete.label}` : ''
+        }`}
+      />
     </div>
   );
 };
