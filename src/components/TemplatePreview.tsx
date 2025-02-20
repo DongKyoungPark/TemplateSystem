@@ -11,7 +11,9 @@ type TemplatePreviewProps = {
   template?: Partial<Template>;
 };
 
-function TemplatePreview({ template: previewTemplate }: TemplatePreviewProps) {
+const TemplatePreview = ({
+  template: previewTemplate,
+}: TemplatePreviewProps) => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { templates } = useTemplateStore();
@@ -214,6 +216,6 @@ function TemplatePreview({ template: previewTemplate }: TemplatePreviewProps) {
       </div>
     </div>
   );
-}
+};
 
 export default TemplatePreview;
