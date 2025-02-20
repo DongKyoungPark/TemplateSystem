@@ -7,7 +7,11 @@ type FormData = {
   [key: string]: string | string[];
 };
 
-function TemplatePreview() {
+type TemplatePreviewProps = {
+  template?: Partial<Template>;
+};
+
+function TemplatePreview({ template: previewTemplate }: TemplatePreviewProps) {
   const { id } = useParams();
   const navigate = useNavigate();
   const { templates } = useTemplateStore();
@@ -15,7 +19,9 @@ function TemplatePreview() {
   const [formData, setFormData] = useState<FormData>({});
 
   useEffect(() => {
-    if (id) {
+    if (previewTemplate) {
+      setTemplate(previewTemplate as Template);
+    } else if (id) {
       const foundTemplate = templates.find((t) => t.id === id);
       if (foundTemplate) {
         setTemplate(foundTemplate);
@@ -30,9 +36,9 @@ function TemplatePreview() {
         setFormData(initialData);
       }
     }
-  }, [id, templates]);
+  }, [id, templates, previewTemplate]);
 
-  if (!template) {
+  if (!template?.elements?.length) {
     return (
       <div className="text-center py-12">
         <p className="text-gray-500 text-lg">Template not found</p>
@@ -71,14 +77,18 @@ function TemplatePreview() {
   return (
     <div className="max-w-4xl mx-auto">
       <div className="bg-gray-100 shadow rounded-lg p-6 border border-gray-400">
-        <h1 className="text-2xl font-bold mb-2">{template.name}</h1>
-        <p className="text-gray-600 mb-6">{template.description}</p>
+        <h1 className="text-2xl font-bold mb-2">
+          {template.name || 'No title'}
+        </h1>
+        <p className="text-gray-600 mb-6">
+          {template.description || 'No description'}
+        </p>
 
         <form className="space-y-6">
           {template.elements.map((element) => (
             <div key={element.id} className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">
-                {element.label}
+                {element.label || 'No label'}
                 {element.required && (
                   <span className="text-red-500 ml-1">*</span>
                 )}
@@ -93,6 +103,7 @@ function TemplatePreview() {
                   }
                   required={element.required}
                   className="mt-1 w-full px-4 py-2 rounded-lg bg-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                  disabled={!!previewTemplate}
                 />
               )}
 
@@ -119,12 +130,13 @@ function TemplatePreview() {
                             0
                         }
                         className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                        disabled={!!previewTemplate}
                       />
                       <label
                         htmlFor={`${element.id}-${index}`}
                         className="ml-2 text-gray-700"
                       >
-                        {option}
+                        {option || 'No option'}
                       </label>
                     </div>
                   ))}
@@ -139,11 +151,12 @@ function TemplatePreview() {
                   }
                   required={element.required}
                   className="mt-1 w-full px-4 py-2 rounded-lg bg-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                  disabled={!!previewTemplate}
                 >
                   <option value="">Select an option</option>
                   {element.options?.map((option, index) => (
                     <option key={index} value={option}>
-                      {option}
+                      {option || 'No option'}
                     </option>
                   ))}
                 </select>
@@ -164,12 +177,13 @@ function TemplatePreview() {
                         }
                         required={element.required}
                         className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
+                        disabled={!!previewTemplate}
                       />
                       <label
                         htmlFor={`${element.id}-${index}`}
                         className="ml-2 text-gray-700"
                       >
-                        {option}
+                        {option || 'No option'}
                       </label>
                     </div>
                   ))}
@@ -178,22 +192,24 @@ function TemplatePreview() {
             </div>
           ))}
 
-          <div className="flex justify-end gap-4 mt-6">
-            <button
-              type="button"
-              onClick={() => navigate(`/edit/${template.id}`)}
-              className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-indigo-600 bg-indigo-100 hover:bg-indigo-200"
-            >
-              Edit Template
-            </button>
-            <button
-              type="button"
-              onClick={() => navigate('/')}
-              className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
-            >
-              Back to List
-            </button>
-          </div>
+          {!previewTemplate && (
+            <div className="flex justify-end gap-4 mt-6">
+              <button
+                type="button"
+                onClick={() => navigate(`/edit/${template.id}`)}
+                className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-indigo-600 bg-indigo-100 hover:bg-indigo-200"
+              >
+                Edit Template
+              </button>
+              <button
+                type="button"
+                onClick={() => navigate('/')}
+                className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+              >
+                Back to List
+              </button>
+            </div>
+          )}
         </form>
       </div>
     </div>
