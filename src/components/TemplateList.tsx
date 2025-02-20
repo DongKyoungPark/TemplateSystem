@@ -24,7 +24,7 @@ const TemplateList = () => {
         <input
           type="text"
           placeholder="Search templates..."
-          className="w-full px-4 py-2  rounded-lg bg-white shadow-sm"
+          className="w-full px-4 py-2 rounded-lg bg-white shadow-sm"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
