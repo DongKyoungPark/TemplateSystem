@@ -14,7 +14,6 @@ type TemplatePreviewProps = {
 const TemplatePreview = ({
   template: previewTemplate,
 }: TemplatePreviewProps) => {
-  console.log('🚀 ~ previewTemplate:', previewTemplate);
   const { id } = useParams();
   const navigate = useNavigate();
   const { templates } = useTemplateStore();
