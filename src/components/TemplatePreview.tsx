@@ -14,6 +14,7 @@ type TemplatePreviewProps = {
 const TemplatePreview = ({
   template: previewTemplate,
 }: TemplatePreviewProps) => {
+  console.log('🚀 ~ previewTemplate:', previewTemplate);
   const { id } = useParams();
   const navigate = useNavigate();
   const { templates } = useTemplateStore();
@@ -40,7 +41,11 @@ const TemplatePreview = ({
     }
   }, [id, templates, previewTemplate]);
 
-  if (!template?.elements?.length) {
+  if (
+    !template?.elements?.length &&
+    previewTemplate?.name === '' &&
+    previewTemplate?.description === ''
+  ) {
     return (
       <div className="text-center py-12">
         <p className="text-gray-500 text-lg">Template not found</p>
@@ -80,14 +85,14 @@ const TemplatePreview = ({
     <div className="max-w-4xl mx-auto">
       <div className="bg-gray-100 shadow rounded-lg p-6 border border-gray-400">
         <h1 className="text-2xl font-bold mb-2">
-          {template.name || 'No title'}
+          {template?.name || 'No title'}
         </h1>
         <p className="text-gray-600 mb-6">
-          {template.description || 'No description'}
+          {template?.description || 'No description'}
         </p>
 
         <form className="space-y-6">
-          {template.elements.map((element) => (
+          {template?.elements.map((element) => (
             <div key={element.id} className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">
                 {element.label || 'No label'}
@@ -198,7 +203,7 @@ const TemplatePreview = ({
             <div className="flex justify-end gap-4 mt-6">
               <button
                 type="button"
-                onClick={() => navigate(`/edit/${template.id}`)}
+                onClick={() => navigate(`/edit/${template?.id}`)}
                 className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-indigo-600 bg-indigo-100 hover:bg-indigo-200"
               >
                 Edit Template
